@@ -1,0 +1,100 @@
+version: '3.8'
+
+x-airflow-common: &airflow-common
+  image: apache/airflow:2.10.2  # stable version
+  environment:
+    &airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    # 1. Airflow metadata DB connection (postgres_meta container)
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow_pass@postgres_meta:5432/airflow_db
+    AIRFLOW__CORE__FERNET_KEY: ''
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+  volumes:
+  # Bind Mounts
+    - ./dags:/opt/airflow/dags
+    - ./logs:/opt/airflow/logs
+    - ./plugins:/opt/airflow/plugins
+    - ./config:/opt/airflow/config
+  user: "${AIRFLOW_UID:-50000}:0"
+  depends_on:
+    postgres_meta:
+      condition: service_healthy
+
+# [Physical separation DB 1]
+services:
+  # ==========================================
+  #  Airflow metadata PostgreSQL
+  # ==========================================
+  postgres_meta:
+    image: postgres:16-alpine
+    container_name: airflow_postgres_meta
+    environment:
+      POSTGRES_USER: ${META_USER}
+      POSTGRES_PASSWORD: ${META_PASSWORD}
+      POSTGRES_DB: ${META_DB}
+    volumes:
+    # Named Volume for persistent storage of database
+      - postgres_meta_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${META_USER} -d ${META_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  #  Analytics Data Warehouse (DW) PostgreSQL
+  # ==========================================
+  postgres_dw:
+    image: postgres:16-alpine
+    container_name: analytics_postgres_dw
+    environment:
+      POSTGRES_USER: ${DW_USER}
+      POSTGRES_PASSWORD: ${DW_PASSWORD}
+      POSTGRES_DB: ${DW_DB}
+    volumes:
+      - postgres_dw_data:/var/lib/postgresql/data
+    ports:
+      - "5435:5432" # Local host port separated to 5435 to prevent conflicts
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DW_USER} -d ${DW_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  # Airflow core services
+  # ==========================================
+  airflow-init:
+  # Initialize the metadata database, Exit after creating the user and tables 
+    <<: *airflow-common
+    container_name: airflow_init
+    command: version
+    environment:
+      <<: *airflow-common-env
+      _AIRFLOW_DB_UPGRADE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: ${AIRFLOW_ADMIN_USER}
+      _AIRFLOW_WWW_USER_PASSWORD: ${AIRFLOW_ADMIN_PASSWORD}
+
+  airflow-webserver:
+  # Standalone webserver for Airflow UI
+    <<: *airflow-common
+    container_name: airflow_webserver
+    command: webserver
+    ports:
+      - "8080:8080"
+    restart: always
+
+  airflow-scheduler:
+  #  Web user interface for monitoring and managing Airflow DAGs
+    <<: *airflow-common
+    container_name: airflow_scheduler
+    command: scheduler
+    restart: always
+
+volumes:
+  postgres_meta_data: # metadata physical volume
+  postgres_dw_data:   # analytics DW physical volume
