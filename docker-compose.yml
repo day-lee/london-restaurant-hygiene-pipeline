@@ -6,7 +6,8 @@ x-airflow-common: &airflow-common
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     # 1. Airflow metadata DB connection (postgres_meta container)
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow_pass@postgres_meta:5432/airflow_db
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${META_USER}:${META_PASSWORD}@postgres_meta:5432/${META_DB}
+    AIRFLOW__CORE__TEST_CONNECTION: ${AIRFLOW__CORE__TEST_CONNECTION}
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
