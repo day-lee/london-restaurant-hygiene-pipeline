@@ -21,7 +21,7 @@ with DAG(
     'london_restaurant_hygiene_pipeline',
     default_args=default_args,
     description='step1: XML to S3',
-    schedule_interval='@daily', # 테스트 목적으로 데일리
+    schedule_interval='@daily', # 테스트 목적으로 데일리, 매일 밤 00:00(UTC)에 실행
     catchup=False,
 ) as dag: 
 
@@ -36,7 +36,7 @@ with DAG(
             # 로컬 디스크 I/O없이 메모리 상에 바이너리 버퍼 bytesIO 생성   
             memory_buffer = BytesIO() 
             # 대용량 파일일 경우 대비해 청크 단위로 쪼개서 메모리 버퍼에 기록 
-            for chunk in response.iter_content(chunk_size=8192):
+            for chunk in response.iter_content(chunk_size=131072):  # 128KB
                 if chunk:
                     memory_buffer.write(chunk)
             # 버퍼 포인터를 맨 앞으로 돌려 읽을 준비 
