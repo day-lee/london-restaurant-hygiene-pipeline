@@ -6,14 +6,15 @@
 ## 🗺️ 프로젝트 체크리스트 (Milestones)
 
 ### Milestone 0: 인프라 세팅
-- [ ] Airflow & PostgreSQL: Docker Compose를 활용해 로컬 환경에 Apache Airflow(Web UI 포함)과 PostgreSQL을 안정적으로 띄우기
-- [ ] AWS S3 테스트용 버킷 생성
-- [ ] Airflow: 하드코딩을 방지하기 위해 Airflow Web UI `Connections` 메뉴에 AWS 자격증명 및 DB 접속 정보 등록하기 
+- [x] Airflow 2 & PostgreSQL 16: Docker Compose를 활용해 로컬 환경에 Apache Airflow(Web UI 포함)과 PostgreSQL을 안정적으로 띄우기
+- [x] AWS S3 테스트용 버킷 생성
+- [x] Airflow: 하드코딩을 방지하기 위해 Airflow Web UI `Connections` 메뉴에 AWS 자격증명 및 DB 접속 정보 등록하기 
 
 ### Milestone 1: Task 1 (Ingestion) – FSA ➔ S3
-- [ ] 런던 자치구 중 딱 1개(예: Camden)만 타겟팅하여 `requests` 라이브러리로 XML 데이터 가져오는 파이썬 스크립트 작성하기
-- [ ] 로컬 디스크 저장 없이 메모리 버퍼에서 `boto3`를 사용하여 S3 버킷으로 바로 쏴주는 스트리밍 업로드 로직 구현하기
-- [ ] Airflow: 이 수집 스크립트를 `PythonOperator`로 감싸서 DAG를 생성하고, Airflow UI에서 수동(Trigger)으로 실행해 초록 불(Success) 확인하기
+- [x] 런던 자치구 중 딱 1개(예: Camden)만 타겟팅하여 `requests` 라이브러리로 XML 데이터 가져오는 파이썬 스크립트 작성하기
+- [x] 로컬 디스크 저장 없이 메모리 버퍼에서 `boto3`를 사용하여 S3 버킷으로 바로 쏴주는 스트리밍 업로드 로직 구현하기
+- [x] Airflow: 이 수집 스크립트를 `PythonOperator`로 감싸서 DAG를 생성하고, Airflow UI에서 수동(Trigger)으로 실행해 초록 불(Success) 확인하기
+- [] 태스크 동적 생성으로 33개 보로우 병렬 수집으로 확장하기 
 
 ### Milestone 2: Task 2 (Load) – S3 ➔ DB
 - [ ] 식당 고유 ID를 기본키(Primary Key)로 설정하여 PostgreSQL 마스터 테이블(Schema) 설계하기
