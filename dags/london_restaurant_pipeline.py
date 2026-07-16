@@ -21,7 +21,7 @@ with DAG(
     'london_restaurant_hygiene_pipeline',
     default_args=default_args,
     description='step1: XML to S3',
-    schedule_interval='@daily', # 테스트 목적으로 데일리, 매일 밤 00:00(UTC)에 실행
+    schedule_interval='@weekly', # 테스트 목적으로 데일리, 매일 밤 00:00(UTC)에 실행
     catchup=False,
 ) as dag: 
 
@@ -63,10 +63,16 @@ with DAG(
             raise Exception(f"FSA XML 다운로드 실패: {response.status_code}")
     
     # PythonOperator로 래핑 
-    extract_xml_to_s3 = PythonOperator(
+    # extract_xml_to_s3 = PythonOperator(
+    #     task_id='extract_xml_to_s3_streaming',
+    #     python_callable=_extract_xml_to_s3_streaming,
+    #     provide_context=True 
+    # )
+
+    # extract_xml_to_s3
+    PythonOperator(
         task_id='extract_xml_to_s3_streaming',
         python_callable=_extract_xml_to_s3_streaming,
         provide_context=True 
     )
 
-    extract_xml_to_s3
