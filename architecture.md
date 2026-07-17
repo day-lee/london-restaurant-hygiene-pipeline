@@ -34,12 +34,13 @@
 - 필요한 만큼 쪼개서 트래픽을 최적화 시킬 수 있다. pagination, filter 사용 가능
 
 
-### 1-2. streaming vs file staging 
+### 1-2. file download: streaming vs file staging 
 #### streaming (기억)
 - 스트리밍 방식은 RAM 메모리에 chunk로 올려 디스트 거치지 않고 흘려보내는 방식 
     - 장점: Airflow 워커의 로컬 디스크 용량을 쓰지 않는다. I/O건너뛰므로 속도가 빠르다.
     - 단점: 멀티스레딩, 제너레이터 등 활용하는 제어 코드가 복잡해짐 
            중간에 에러가 나면 추적이 어려움. 처음부터 다시 시작해야함 
+- api 요청이었다면 쪼개서 받는 pagination에 해당
 #### file staging download (노트 저장)
 - 로컬 파일 다운로드는 실제 디스크 SSD 공간인 airflow 워커 /tmp에 저장하는 방법 
     - 장점: 로컬 디스크에 실물 파일이 존재하므로 안정성있음. 디버깅이 쉬움 
