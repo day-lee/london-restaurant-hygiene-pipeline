@@ -16,8 +16,10 @@
 - [ ] Airflow `PythonOperator`로 감싸서 DAG를 생성하고, Airflow UI에서 수동(Trigger)으로 실행해 초록 불(Success) 확인하기
 - [ ] 태스크 동적 생성으로 33개 보로우 병렬 수집으로 확장하기 
 
-### Milestone 2: Task 2 (Load & Transform) – Local `/tmp` ➔ S3 & DB
+### Milestone 2: Task 2 (Load) – Local `/tmp` ➔ S3
 - [ ] 로컬 `/tmp` 디렉토리에 저장된 XML 파일을 읽어 원본 백업을 위해 AWS S3 버킷에 업로드하기
+
+### Milestone 3: Task 3 (Load & Transform) – Local `/tmp` ➔ DB
 - [ ] XML 데이터 파싱 및 필요한 핵심 컬럼만 정제(추출)하는 로직 구현하기. Xpath
 - [ ] 식당 고유 ID를 기본키(Primary Key)로 활용하여 PostgreSQL 마스터 테이블(Schema) 설계하기
 - [ ] 정제된 데이터를 Data Warehouse(DW)에 중복 없이 반영할 수 있도록 `Upsert` 로직 구현하기
@@ -25,11 +27,11 @@
   - [ ] 1) 이번 주 위생등급이 0~2점으로 업데이트된 우려 식당 리스트
   - [ ] 2) 유저 즐겨찾기 테이블과 JOIN하여 0~2점이 뜬 찜한 식당 리스트
 
-### Milestone 3: Task 3 (Cleanup) – Remove Local Files
+### Milestone 4: Task 4 (Cleanup) – Remove Local Files
 - [ ] 파이프라인 실행 완료 후 Airflow 로컬 `/tmp` 디렉토리에 남아있는 임시 XML 파일 삭제 로직 구현하기
 - [ ] 파이프라인 성공/실패 여부와 관계없이(Trigger Rule 활용 등) 로컬 디스크 공간이 안정적으로 관리되도록 예외 처리 적용하기
 
-### Milestone 4: Task 4 (Alert) – Slack Notification
+### Milestone 5: Task 5 (Alert) – Slack Notification
 - [ ] Task 3, 4는 독립적인 태스크로 의존성 설계 
 - [ ] 테스트용 슬랙 채널을 개설하고 알림을 받을 수 있는 Incoming Webhook URL 발급받기 또는 Slack Operator 설정하기
 - [ ] Task 2에서 처리된 데이터 요약본을 **XComs(태스크 간 통신)**를 통해 Task 3으로 안전하게 넘겨받아 슬랙 알림 메시지 최종 발송 성공하기
