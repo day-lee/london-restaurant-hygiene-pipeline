@@ -44,6 +44,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s # Wait for 10 seconds before starting health check to allow the database to initialize
 
   # ==========================================
   #  Analytics Data Warehouse (DW) PostgreSQL
@@ -87,6 +88,9 @@ services:
     command: webserver
     ports:
       - "8080:8080"
+    depends_on:
+      postgres_meta:
+        condition: service_healthy      
     restart: always
 
   airflow-scheduler:
