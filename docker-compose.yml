@@ -11,12 +11,15 @@ x-airflow-common: &airflow-common
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    PYTHONPATH: '/opt/airflow'
   volumes:
   # Bind Mounts
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
     - ./plugins:/opt/airflow/plugins
     - ./config:/opt/airflow/config
+    - ./data:/opt/airflow/data
+    - ./include:/opt/airflow/include
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     postgres_meta:
