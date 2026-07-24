@@ -35,9 +35,12 @@
 - `requests.exceptions.HTTPError`는 서버와 대화는 했지만 4,5xx 상태코드가 왔을 경우
 - `requests.exceptions.RequestException`은 응답을 아예 받지 못함. 인터넷 끊겼거나, 서버꺼져서 반응이 없거나. 
 
-"""
-- [ㅇ] 런던 자치구 중 딱 1개(예: Camden)만 타겟팅하여 `requests` 라이브러리를 활용하여 XML 데이터 다운로드 기능 구현하기
-- [x] 수집된 XML 파일을 Airflow 로컬 임시 디렉토리(`/tmp`)에 안전하게 저장하는 로직 작성하기
-- [ ] Airflow `PythonOperator`로 감싸서 DAG를 생성하고, Airflow UI에서 수동(Trigger)으로 실행해 초록 불(Success) 확인하기
-- [ ] 태스크 동적 생성으로 33개 보로우 병렬 수집으로 확장하기 
-"""
+- session을 열어서 connection pooling, 세션 재사용이 가능해짐. `HTTP Keep-Alive` 상태임. handshake 오버헤드가 감소함. 
+
+- 반복문에서 33개 구 중 누락되는 경우를 어떻게 핸들링 할 것인가?
+- 루프에서 에러가 났을 때 바로 Raise로 airflow에 에러 신호를 주지 않고, continue로 일단 모든 루프를 돌게함. 
+- 실패 기록을 리스트에 담아둠. 
+- 일단 정상적인 구는 다 돌고나서, 마지막에 이 실패 리스트가 empty인지 확인한다. 
+- 만약 실패한게 하나라도 있으면 강제로 raise를 던져서 task가 최종적으로는 실패하게 만든다. 
+- 다시 시도할 때 누락된 구만 다시 채워넣는 구조를 만든다. -> os.path.exists() 이용해서 파일이 이미 존재하는지 확인함 
+- raise는 가장 최근에 발생한 에러를 그대로 다시 던지겠다는 뜻. 
