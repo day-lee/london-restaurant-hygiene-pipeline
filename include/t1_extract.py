@@ -1,9 +1,11 @@
 ### Milestone 1: Task 1 (Extract) – API ➔ Local `/tmp`
+from datetime import datetime 
 import requests
 
 LOCAL_AUTHORITY_CODE = ['501', '502', '503', '504', '505', '506', '507', '508', '509', '510', '511', '512', '513', '514', '515', '516', '517', '518', '519', '520', '521', '522', '523', '524', '525', '526', '527', '528', '529', '530', '531', '532', '533']
 
 def extract_xml_to_tmp():
+    today_date = datetime.now().date()
 
     session = requests.Session() 
     user_headers = {
@@ -17,7 +19,7 @@ def extract_xml_to_tmp():
             r.raise_for_status()
             print(f"{code} - xml 파일 다운로드 시작")
             # production path
-            with open(f"/opt/airflow/data/fsa-{code}.xml", 'wb') as f:
+            with open(f"/opt/airflow/data/fsa-{code}-{today_date}.xml", 'wb') as f:
             # local path
             # with open('./data/fsa.xml', 'wb') as f:
                 f.write(r.content)
