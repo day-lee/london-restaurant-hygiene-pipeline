@@ -5,7 +5,11 @@ def extract_xml_to_tmp():
     print("xml 파일 다운로드 시작")
 
     url = "https://ratings.food.gov.uk/api/open-data-files/FHRS506en-GB.xml" 
-    r = requests.get(url, timeout=30)
+    user_headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "application/xml"
+    }
+    r = requests.get(url, headers=user_headers, timeout=30)
     try: 
         r.raise_for_status()
         # production path
