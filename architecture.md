@@ -78,11 +78,13 @@
 - 감사 오딧용(data lineage)
 - 외부 데이터 접근 불가능: 네트워크 문제 등, pipeline re-run
 - data replication, database redundancy 미래 유실 대비 등.. 
+- unstructured 데이터
 
 #### 데이터 웨어하우스 DW
 - 회사 전체 데이터 대상 
 - 비즈니스에 필요한 핵심 필드만 가공해서 postgreSQL에 upsert함 
 - 데이터 웨어하우스 DW 전문 솔루션: 대용량 분석에 특화된 AWS Redshift, Google BigQuery, SnowFlake 
+- structured tables
 
 #### 데이터 마트 DM
 - 웨어하우스에서 특정 부서나 목적에 맞게 골라내서 만든 저장소 
