@@ -40,3 +40,26 @@ The standard modern data stack (MDS) orchestration framework across London data 
 
 * **Definition**: An open-source workflow tool that enables data engineers to write modular, version-controlled transformations inside the data warehouse using plain **SQL and Jinja**.
 * **Why it matters**: It automatically orchestrates the lineage from your Staging Layer to your Fact and Dimension tables, embeds automated data quality testing (`not_null`, `unique`), and auto-generates documentation/ERDs out of the box. Mentioning dbt proficiency instantly shifts your profile from an aspiring junior to a production-ready engineer.
+
+---
+
+## 5. DL vs DW vs DM
+* ** 데이터 레이크 DL
+- s3는 Single Source of Truth로 사용됨. 
+    - s3 glacier는 아카이브 등급으로 과거 데이터 저장가능. 비용이 굉장히 적음 
+- 로우 데이터 백업: 외부 공공 데이터의 특성상 변경되거나 제공 중단 될 수 있음 
+- 감사 오딧용(data lineage)
+- 외부 데이터 접근 불가능: 네트워크 문제 등, pipeline re-run
+- data replication, database redundancy 미래 유실 대비 등.. 
+- unstructured 데이터
+
+#### 데이터 웨어하우스 DW
+- 회사 전체 데이터 대상 
+- 비즈니스에 필요한 핵심 필드만 가공해서 postgreSQL에 upsert함 
+- 데이터 웨어하우스 DW 전문 솔루션: 대용량 분석에 특화된 AWS Redshift, Google BigQuery, SnowFlake 
+- structured tables
+
+#### 데이터 마트 DM
+- 웨어하우스에서 특정 부서나 목적에 맞게 골라내서 만든 저장소 
+- 작고 단순하게 구성되어 빠른 쿼리 속도로 현업 담당자들이 바로 쓸수 있게 가공되어 있음 
+
