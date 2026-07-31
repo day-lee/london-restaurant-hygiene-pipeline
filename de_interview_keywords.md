@@ -45,21 +45,27 @@ The standard modern data stack (MDS) orchestration framework across London data 
 
 ## 5. DL vs DW vs DM
 * ** 데이터 레이크 DL
-- s3는 Single Source of Truth로 사용됨. 
-    - s3 glacier는 아카이브 등급으로 과거 데이터 저장가능. 비용이 굉장히 적음 
-- 로우 데이터 백업: 외부 공공 데이터의 특성상 변경되거나 제공 중단 될 수 있음 
+- 로우 데이터 백업: 외부 소스 데이터는 변경되거나 제공 중단 될 수 있음 
+- 데이터 가공 목적이 아직 정해지지 않았을 수 있음
+- 전체 회사 범위
 - 감사 오딧용(data lineage)
 - 외부 데이터 접근 불가능: 네트워크 문제 등, pipeline re-run
 - data replication, database redundancy 미래 유실 대비 등.. 
-- unstructured 데이터
+- unstructured 데이터: 비디오, 텍스트, 다양한 포맷
+- s3는 Single Source of Truth로 사용됨. 
+    - s3 glacier는 아카이브 등급으로 과거 데이터 저장가능. 비용이 굉장히 적음 
 
 #### 데이터 웨어하우스 DW
 - 회사 전체 데이터 대상 
+- 중간에서 upstream, downstream effect가 있어서 복잡한 변화는 어려움
+(upstream(영향 받는): 소스데이터의 노드명 변경, downstream(영향 주는): dw에서 변경한 컬럼명이 대시보드가 깨진다. )
 - 비즈니스에 필요한 핵심 필드만 가공해서 postgreSQL에 upsert함 
 - 데이터 웨어하우스 DW 전문 솔루션: 대용량 분석에 특화된 AWS Redshift, Google BigQuery, SnowFlake 
 - structured tables
+- BI, SQL Analytics
 
 #### 데이터 마트 DM
-- 웨어하우스에서 특정 부서나 목적에 맞게 골라내서 만든 저장소 
+- structured
+- "특정 부서" 대상 (내 플젝은 운영팀)
 - 작고 단순하게 구성되어 빠른 쿼리 속도로 현업 담당자들이 바로 쓸수 있게 가공되어 있음 
-
+- 100 GB 이하
