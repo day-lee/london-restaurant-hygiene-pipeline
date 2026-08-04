@@ -16,9 +16,9 @@ def load_to_s3():
     BUCKET_NAME = Variable.get("s3_bucket_name")
     
     for code in LOCAL_AUTHORITY_CODE:
-        file_name = f"fsa-{code}-{today_date}.xml"
+        file_name = f"fhrs-{code}-{today_date}.xml"
         try: 
-            file_path = f"/opt/airflow/data/{file_name}"
+            file_path = f"/opt/airflow/data/{today_date}/{file_name}"
             # S3에 저장될 경로 
             s3_key = f"raw-data/code={code}/date={today_date}/{file_name}"
 

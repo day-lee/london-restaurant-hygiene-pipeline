@@ -3,7 +3,7 @@ from datetime import datetime
 import requests
 import os
 
-LOCAL_AUTHORITY_CODE = ['501', '502', '503', '504', '505', '506', '507', '508', '509', '510', '511', '512', '513', '514', '515', '516', '517', '518', '519', '520', '521', '522', '523', '524', '525', '526', '527', '528', '529', '530', '531', '532', '533']
+from include.constants import LOCAL_AUTHORITY_CODE
 
 def extract_xml_to_tmp():
     today_date = datetime.now().date()
@@ -13,10 +13,13 @@ def extract_xml_to_tmp():
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         "Accept": "application/xml"
     }
+
     for code in LOCAL_AUTHORITY_CODE:
         url = f"https://ratings.food.gov.uk/api/open-data-files/FHRS{code}en-GB.xml" 
-        production_path_name = f"/opt/airflow/data/fsa-{code}-{today_date}.xml"
-        local_path_name = f"./data/fsa-{code}-{today_date}.xml"
+        production_path_name = f"/opt/airflow/data/{today_date}/fhrs-{code}-{today_date}.xml"
+        dir_name = os.path.dirname(production_path_name)
+        os.makedirs(dir_name, exist_ok=True)
+        # local_path_name = f"./data/{today_date}/fhrs-{code}-{today_date}.xml"
 
         # retry시 이미 존재하는 파일은 건너뜀
         if os.path.exists(production_path_name):
