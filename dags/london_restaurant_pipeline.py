@@ -4,6 +4,7 @@ from airflow.operators.python import PythonOperator
 
 from include.t1_extract import extract_xml_to_tmp
 from include.t2_load_to_s3 import load_to_s3
+from include.t3_load_transform_to_db import load_transform_to_db
 
 BUCKET_NAME = "london-restaurant-hygiene-data-dy"
 AWS_CONN_ID = "aws_s3_conn" 
@@ -34,14 +35,12 @@ with DAG(
             python_callable=load_to_s3,
     )
 
+    task_3 = PythonOperator (
+            task_id="load_postgres_task", 
+            python_callable=load_transform_to_db,
+    )
+
     # dependency 설정 
-    task_1 >> task_2
+    task_1 >> [task_2, task_3]
     
-# # TODO: task_2, task_3, task_4, task_5 정의하고 의존성 연결하기
-#     # task1 끝나야 2,3 가능 
-#     task_1 >> [task_2, task_3]
-#     # 2,3 끝나고나서 4 지울수 있음
-#     [task_2, task_3] >> task_4
-#     # 2,3 끝나면 알람 보낼 수 있음 성공여부, 실패여부/ 3만 끝나도 운영팀 슬랙 보낼 수 있음
-#     [task_2, task_3] >> task_5
 
