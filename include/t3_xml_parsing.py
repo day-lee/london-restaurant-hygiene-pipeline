@@ -25,15 +25,11 @@ def parse_xml(file_path:str):
                 record_dict[tag] = None 
                 continue 
             try: 
-                if tag == "RatingValue":
-                    record_dict[tag] = int(text_value)
-                elif tag == "RatingDate":
+                if tag == "RatingDate":
                     record_dict[tag] = datetime.strptime(text_value, '%Y-%m-%d').date() # date() 연월일까지만 남기려고 
                 else:
                     record_dict[tag] = str(text_value)
             except ValueError:
-                # TODO: int 타입으로 정했지만 RatingValue에 "AwaitingInspection" 같은 문자열이 들어오는 경우가 있음. 현재로서는 무시하기. 
-                # print(f"Value error: {tag}, {text_value}")
                 record_dict[tag] = None
         result_list.append(record_dict)
     print("item count: ",item_count, "Count match" if item_count == len(result_list) else "Count not match")
