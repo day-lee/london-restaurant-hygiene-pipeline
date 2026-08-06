@@ -14,7 +14,7 @@ x-airflow-common: &airflow-common
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     PYTHONPATH: '/opt/airflow'
-    _PIP_ADDITIONAL_REQUIREMENTS: "psycopg[binary]"
+    _PIP_ADDITIONAL_REQUIREMENTS: "psycopg[binary] apache-airflow-providers-docker docker"
   volumes:
   # Bind Mounts
     - ./dags:/opt/airflow/dags
@@ -23,6 +23,7 @@ x-airflow-common: &airflow-common
     - ./config:/opt/airflow/config
     - ./data:/opt/airflow/data
     - ./include:/opt/airflow/include
+    - /var/run/docker.sock:/var/run/docker.sock
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     postgres_meta:
@@ -71,6 +72,14 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  # ==========================================
+  #  dbt image build target
+  # ==========================================
+  dbt:
+    build:
+      context: ./dbt_project
+    image: my_dbt_project:latest
 
   # ==========================================
   # Airflow core services

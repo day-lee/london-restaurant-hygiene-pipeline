@@ -1,10 +1,13 @@
+import os
 from datetime import datetime, timedelta
 from airflow import DAG
+from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.operators.python import PythonOperator
 
 from include.t1_extract import extract_xml_to_tmp
 from include.t2_load_to_s3 import load_to_s3
-from include.t3_load_transform_to_db import load_transform_to_db
+from include.t3_load_stg_to_db import load_to_db
+
 
 BUCKET_NAME = "london-restaurant-hygiene-data-dy"
 AWS_CONN_ID = "aws_s3_conn" 
@@ -34,13 +37,33 @@ with DAG(
             task_id="load_s3_task", 
             python_callable=load_to_s3,
     )
-
-    task_3 = PythonOperator (
-            task_id="load_postgres_task", 
-            python_callable=load_transform_to_db,
+    task_3 = PythonOperator(
+            task_id="load_stg_db_task",
+            python_callable=load_to_db,
+    )
+    task_4 = DockerOperator(
+            task_id="dbt_debug_task",
+            image="my_dbt_project:latest",
+            # 나중에 폴더명 변경 필요 
+            command=[
+                "debug",
+                "--profiles-dir",
+                ".",
+                "--project-dir",
+                ".",
+            ],
+            docker_url="unix://var/run/docker.sock",
+            mount_tmp_dir=False,
+            auto_remove=True,
+            do_xcom_push=False,
+            environment={
+            "DW_DB": os.environ.get("DW_DB", ""),
+            "DW_USER": os.environ.get("DW_USER", ""),
+            "DW_PASSWORD": os.environ.get("DW_PASSWORD", ""),
+            },
     )
 
     # dependency 설정 
     task_1 >> [task_2, task_3]
-    
+    task_3 >> task_4
 

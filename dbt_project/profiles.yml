@@ -1,0 +1,12 @@
+my_dbt_project:
+  outputs:
+    dev:
+      type: postgres
+      host: host.docker.internal
+      user: "{{ env_var('DW_USER') }}"
+      pass: "{{ env_var('DW_PASSWORD') }}"
+      port: 5435
+      dbname: "{{ env_var('DW_DB') }}"
+      schema: public
+      threads: 4
+  target: dev
