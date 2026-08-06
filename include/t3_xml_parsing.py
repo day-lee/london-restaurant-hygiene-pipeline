@@ -2,8 +2,8 @@ from lxml import etree
 from datetime import datetime 
 
 def parse_xml(file_path:str): 
-    tree = etree.parse(file_path)
-    root = tree.getroot() 
+    tree = etree.parse(file_path) #파일 읽기
+    root = tree.getroot()         #최상위 태그 찾기
     item_count = int(root.findtext("./Header/ItemCount"))
     records = root.xpath(".//EstablishmentDetail")
 
@@ -15,13 +15,10 @@ def parse_xml(file_path:str):
         record_dict = {} 
         for tag in target_tags:
             node = record.find(tag)
-
-            # 노드가 없거나 텍스트가 비어있으면 None 처리 
-            if node is None or node.text is None:
-                record_dict[tag] = None 
-                continue 
-            text_value = node.text.strip() 
-            if not text_value: #" " 빈 문자열
+            # node가 존재하고 text가 있을 때만 strip(), 없으면 None 반환
+            text_value = node.text.strip() if (node is not None and node.text) else None
+            # text_value가 None이거나 빈 문자열("")이면 None 저장 후 넘어감
+            if not text_value:
                 record_dict[tag] = None 
                 continue 
             try: 
