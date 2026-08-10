@@ -45,7 +45,7 @@ def load_to_db():
                         RatingDate DATE,
                         LocalAuthorityCode VARCHAR(50),
                         LocalAuthorityName VARCHAR(255),
-                        extracted_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+                        updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
                     );
                 """)
                 # staging 테이블 초기화
