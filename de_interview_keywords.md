@@ -127,15 +127,19 @@ The standard modern data stack (MDS) orchestration framework across London data 
 4. Data governance: is a set of organizational policies and processes to help keep the data clean
 
 
-## 9. Columnar 
+## 9. Tabular source, Columnar 
 
 ### Tabular Source(정형 structured 데이터 소스) 
 - 행과 열을 가진 테이블 형식 
 - Parguet: 데이터 엔지니어링에서 가장 많이 쓰는 열 기반(Columnar) 정형 파일 형식입니다.
-- Row based - 트랜잭션용: MySQL, PostgreSQL, Oracle
-- Column based - 분석/DW용: Google BigQuery, Snowflake, AWS Redshift
+- Row based 행 기반 - 트랜잭션용: MySQL, PostgreSQL, Oracle
+- Column based 열 기반 - 분석/DW용: Google BigQuery, Snowflake, AWS Redshift
 
-### Columnar 열기반 
+### Columnar data 열기반 
+#### Pandas
 - 판다스는 시리즈(열 기반)가 연속되어서 묶여있다. 
 - 벡터화(Vectorization): C언어로 구현된 내부 엔진(NumPy 기반)이 메모리에 일렬로 나열된 열(Column) 데이터를 통째로 가져와 한 번에 연산한다. 
-
+#### BigQuery
+- 각 열이 별도로 저장되고 각 열에 대한 인덱스를 포함한다 
+- capacitor에 저장
+- colossus 분산 처리
