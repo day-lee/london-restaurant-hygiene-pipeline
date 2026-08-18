@@ -1,5 +1,5 @@
-# 🚀 London FSA Hygiene Data Pipeline Project
-> **Project Goal:** Apache Airflow를 깊이 이해하고, S3 백업 및 PostgreSQL 적재를 포함한 End-to-End 데이터 파이프라인의 핵심 개념(멱등성, XComs, Connections 등) 마스터하기.
+# 🚀 London FHRS Restaurant Hygiene Data Pipeline Project
+> **Project Goal:** Apache Airflow를 깊이 이해하고, S3 백업 및 PostgreSQL 적재를 포함한 End-to-End 데이터 파이프라인의 핵심 개념 마스터
 
 ---
 
@@ -11,13 +11,13 @@
 - [x] Airflow: 하드코딩을 방지하기 위해 Airflow Web UI `Connections` 메뉴에 AWS 자격증명 및 DB 접속 정보 등록하기 
 
 ### Milestone 1: Task 1 (Extract) – API ➔ Local `/tmp`
-- [ ] 런던 자치구 중 딱 1개(예: Camden)만 타겟팅하여 `requests` 라이브러리를 활용하여 XML 데이터 다운로드 기능 구현하기
-- [ ] 수집된 XML 파일을 Airflow 로컬 임시 디렉토리(`/tmp`)에 안전하게 저장하는 로직 작성하기
-- [ ] Airflow `PythonOperator`로 감싸서 DAG를 생성하고, Airflow UI에서 수동(Trigger)으로 실행해 초록 불(Success) 확인하기
-- [ ] 태스크 동적 생성으로 33개 보로우 병렬 수집으로 확장하기 
+- [x] 런던 자치구 중 딱 1개(예: Camden)만 타겟팅하여 `requests` 라이브러리를 활용하여 XML API 데이터 호출 다운로드 기능 구현하기
+- [x] 수집된 XML 파일을 Airflow 로컬 임시 디렉토리(`/tmp`)에 안전하게 저장하는 로직 작성하기
+- [x] Airflow `PythonOperator`로 감싸서 DAG를 생성하고, Airflow UI에서 수동(Trigger)으로 실행해 초록 불(Success) 확인하기
+- [x] 반복문에서 파일 이름 동적 생성으로 33개 보로우 병렬 수집으로 확장하기 
 
 ### Milestone 2: Task 2 (Load) – Local `/tmp` ➔ S3
-- [ ] 로컬 `/tmp` 디렉토리에 저장된 XML 파일을 읽어 원본 백업을 위해 AWS S3 버킷에 업로드하기
+- [x] 로컬 `/tmp` 디렉토리에 저장된 XML 파일을 읽어 원본 백업을 위해 AWS S3 버킷에 업로드하기
 
 ### Milestone 3: Task 3 (Load & Transform) – Local `/tmp` ➔ DB
 - [ ] XML 데이터 파싱 및 필요한 핵심 컬럼만 정제(추출)하는 로직 구현하기. Xpath
