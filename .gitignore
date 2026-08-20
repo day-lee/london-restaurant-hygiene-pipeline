@@ -4,3 +4,4 @@ logs/
 .vscode/
 .DS_Store
 data
+fly_copy.toml
