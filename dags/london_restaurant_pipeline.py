@@ -1,10 +1,11 @@
-import os
+import sys
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.operators.bash import BashOperator
 from docker.types import Mount
 
+sys.path.append('/opt/airflow')
 from include.t1_extract import extract_xml_to_tmp
 from include.t2_load_to_s3 import load_to_s3
 from include.t3_load_stg_to_db import load_to_db
@@ -47,7 +48,7 @@ with DAG(
         task_id='dbt_run_task',
         bash_command="""
         export DW_USER="{{ conn.analytics_user.login }}" && \
-        export DW_PASSWORD="{{ conn.analytics_user.password }}" && \
+        export DW_PASSWORD="{{ conn.analytics_user.get_password() }}" && \
         export DW_HOST="{{ conn.analytics_user.host }}" && \
         export DW_PORT="{{ conn.analytics_user.port }}" && \
         export DW_DB="{{ conn.analytics_user.schema }}" && \
