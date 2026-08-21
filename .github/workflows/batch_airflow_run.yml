@@ -23,7 +23,7 @@ jobs:
               env: 
                 FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
    
-            - name: Airflow Booting wait nd DAG status check 
+            - name: Airflow Booting wait and DAG status check 
               run: |
                 echo "Check Airflow booting status and DAG completion..."
 
@@ -33,25 +33,29 @@ jobs:
 
                 while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
                   echo "Checking pipeline status... (Attempt $ATTEMPT/$MAX_ATTEMPTS)"
-
-                  # Fly.io ssh console to check the status of the Airflow DAG run
-                  # Status: running, success, failed
-
-                  STATUS=$(flyctl ssh console --command "airflow dags list-runs -d london_restaurant_hygiene_pipeline -o plain --no-backfill | tail -n 1 | awk '{print \$3}'" -a london-restaurant-hygiene-pipeline 2>/dev/null | tr -d '\r\n ' || echo "booting")
-
+    
+                  RAW_OUTPUT=$(flyctl ssh console --command "airflow dags list-runs -d london_restaurant_hygiene_pipeline -o plain --no-backfill 2>/dev/null | tail -n 1" -a london-restaurant-hygiene-pipeline 2>/dev/null || echo "booting")
+    
+                  if echo "$RAW_OUTPUT" | grep -qE "running|success|failed"; then
+                    STATUS=$(echo "$RAW_OUTPUT" | awk '{print \$3}' | tr -d '\r\n ')
+                  else
+                    STATUS="booting"
+                  fi
+    
                   echo "Current DAG State: [$STATUS]"
-
+    
                   if [ "$STATUS" = "success" ]; then
-                    echo "Success!"
+                    echo "✅ Success " 
                     exit 0
                   elif [ "$STATUS" = "failed" ]; then
-                    echo "[Error] Airflow DAG failed. Please check the logs for more details."
+                    echo "❌ Error"
                     exit 1
                   fi
-
-                  sleep 15
+    
+                  sleep 20
                   ATTEMPT=$((ATTEMPT+1))
                 done
+
 
                 echo "[Warning] Timeout! Batch run did not complete within the expected time frame."
                 exit 1
