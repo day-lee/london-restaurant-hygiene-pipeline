@@ -84,4 +84,5 @@ def load_to_db():
 
     except Exception as e:
         print(f"에러 발생: {e}")
+        raise e
 
