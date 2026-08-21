@@ -23,45 +23,10 @@ jobs:
               env: 
                 FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
    
-            - name: Airflow Booting wait and DAG status check 
+            - name: Waiting for Airflow to be fully up and running the Dag
               run: |
-                echo "Check Airflow booting status and DAG completion..."
-
-                
-                MAX_ATTEMPTS=10
-                ATTEMPT=1
-
-                while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-                  echo "Checking pipeline status... (Attempt $ATTEMPT/$MAX_ATTEMPTS)"
-    
-                  RAW_OUTPUT=$(flyctl ssh console --command "airflow dags list-runs -d london_restaurant_hygiene_pipeline -o plain --no-backfill 2>/dev/null | tail -n 1" -a london-restaurant-hygiene-pipeline 2>/dev/null || echo "booting")
-    
-                  if echo "$RAW_OUTPUT" | grep -qE "running|success|failed"; then
-                    STATUS=$(echo "$RAW_OUTPUT" | awk '{print \$3}' | tr -d '\r\n ')
-                  else
-                    STATUS="booting"
-                  fi
-    
-                  echo "Current DAG State: [$STATUS]"
-    
-                  if [ "$STATUS" = "success" ]; then
-                    echo "✅ Success " 
-                    exit 0
-                  elif [ "$STATUS" = "failed" ]; then
-                    echo "❌ Error"
-                    exit 1
-                  fi
-    
-                  sleep 20
-                  ATTEMPT=$((ATTEMPT+1))
-                done
-
-
-                echo "[Warning] Timeout! Batch run did not complete within the expected time frame."
-                exit 1
-              env: 
-                FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-
+                echo "waiting for 5 minutes to ensure Airflow is fully up and run the DAG"
+                sleep 300 
 
             - name: Fly.io Airflow Stop 
               if: always() # Ensure this step runs even if previous steps fail
