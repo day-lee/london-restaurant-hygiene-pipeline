@@ -1,7 +1,7 @@
 {{ config(
     materialized='incremental',
     unique_key=['fhrs_id', 'updated_at'],
-    incremental_strategy='append'
+    incremental_strategy='delete+insert'
 ) }}
 
 WITH source_data AS(SELECT 
