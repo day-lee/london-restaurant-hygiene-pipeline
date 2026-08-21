@@ -5,7 +5,7 @@ my_dbt_project:
       host: "{{ env_var('DW_HOST') }}"
       user: "{{ env_var('DW_USER') }}"
       password: "{{ env_var('DW_PASSWORD') }}"
-      port: 5432
+      port: "{{ env_var('DW_PORT') | int }}"
       dbname: "postgres"
       schema: public
       threads: 1 
