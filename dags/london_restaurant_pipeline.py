@@ -17,7 +17,7 @@ AWS_CONN_ID = "aws_s3_conn"
 default_args = {
     'owner': 'dayeonlee',
     'depends_on_past': False,
-    'start_date': datetime(2026, 7, 1),
+    'start_date': datetime(2026, 8, 20),
     'retries': 1,
     # 'retry_delay': timedelta(minutes=5),
     'retry_delay': timedelta(minutes=1),
@@ -27,7 +27,7 @@ with DAG(
     'london_restaurant_hygiene_pipeline',
     default_args=default_args,
     description='XML to S3, PostgreSQL',
-    schedule_interval='@weekly',
+    schedule_interval='@daily',
     catchup=False,
 ) as dag: 
         
