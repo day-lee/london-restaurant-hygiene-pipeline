@@ -1,0 +1,40 @@
+app = 'london-restaurant-hygiene-pipeline'
+primary_region = 'lhr'
+
+[build]
+
+[http_service] 
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+  max_machines_count = 1 
+
+  [[http_service.checks]]
+    grace_period = "180s" 
+    interval = "15s"
+    restart_limit = 0
+    timeout = "5s"
+    method = "get"
+    path = "/health" 
+
+[[vm]]
+  size = "shared-cpu-2x"
+  memory = "4096mb"
+
+[env]
+  AIRFLOW__CORE__EXECUTOR = "LocalExecutor"
+  AIRFLOW__WEBSERVER__WORKERS = "1"                
+  AIRFLOW__CORE__PARALLELISM = "2"                  
+  AIRFLOW__CORE__MAX_ACTIVE_TASKS_PER_DAG = "1"     
+  AIRFLOW__SCHEDULER__PARALLELISM = "2"
+  AIRFLOW__SCHEDULER__MAX_THREADS = "1"             
+  AIRFLOW__DATABASE__SQL_ALCHEMY_CONN = "secret_key"
+  AIRFLOW__CORE__LOAD_EXAMPLES = "False" 
+  AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL = "60"
+
+[experimental]
+  entrypoint = ["sh", "-c"]
+  cmd = ["airflow db migrate; airflow scheduler & exec airflow webserver --hostname 0.0.0.0 --port 8080 --workers 1"]

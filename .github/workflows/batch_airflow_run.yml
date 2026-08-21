@@ -1,0 +1,35 @@
+name: Batch Airflow Run 
+
+on:
+    schedule: 
+        - cron: '0 0 * * *'
+    workflow_dispatch: # manual trigger test 
+jobs: 
+    run_pipeline:
+        runs-on: ubuntu-latest 
+        steps:
+            - name: Checkout repogistory 
+              uses: actions/checkout@v3 
+            
+            - name: Set up Fly.io CLI 
+              uses: superfly/flyctl-actions/setup-flyctl@master 
+              with: 
+                version: '0.2.10'
+              env: 
+                FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+            - name: Fly.io Airflow Start 
+              run: | 
+                echo "Starting Airflow..."
+                flyctl machine start 8ed9d17f314448 -a london-restaurant-hygiene-pipeline
+            
+            - name: Airflow Booting wait and batch run 
+              run: | 
+                echo "Waiting for Airflow to boot and execute the DAG" 
+                sleep 100 
+            
+            - name: Fly.io Airflow Stop 
+              if: always() # Ensure this step runs even if previous steps fail
+              run: | 
+                echo "Stopping Airflow...to prevent billing"
+                flyctl machine stop 8ed9d17f314448 -a london-restaurant-hygiene-pipeline

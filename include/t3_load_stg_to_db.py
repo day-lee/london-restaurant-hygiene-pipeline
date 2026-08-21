@@ -13,13 +13,11 @@ def load_to_db():
     code_list = LOCAL_AUTHORITY_CODE
 
     DB_CONFIG = {
-        # "host": "localhost", #local
-        "host": "postgres_dw",  # production
-        # "port": 5435, #local
-        "port": 5432,  # production
-        "dbname": os.environ.get("DW_DB"),
-        "user": os.environ.get("DW_USER"),
-        "password": os.environ.get("DW_PASSWORD"),
+        "host": os.environ.get("DB_HOST"), 
+        "port": 6543,  
+        "dbname": os.environ.get("DB_NAME"),
+        "user": os.environ.get("DB_USER"),
+        "password": os.environ.get("DB_PASSWORD"),
     }
 
     # stg 테이블에 벌크 인서트
@@ -87,4 +85,3 @@ def load_to_db():
     except Exception as e:
         print(f"에러 발생: {e}")
 
-# load_to_db()  #로컬 테스트용
