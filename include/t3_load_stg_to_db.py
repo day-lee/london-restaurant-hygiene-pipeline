@@ -14,7 +14,7 @@ def load_to_db():
 
     DB_CONFIG = {
         "host": os.environ.get("DB_HOST"), 
-        "port": 6543,  
+        "port": 5432,  
         "dbname": os.environ.get("DB_NAME"),
         "user": os.environ.get("DB_USER"),
         "password": os.environ.get("DB_PASSWORD"),
