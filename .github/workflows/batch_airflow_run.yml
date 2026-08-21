@@ -27,8 +27,8 @@ jobs:
               run: |
                 echo "Check Airflow booting status and DAG completion..."
 
-                # Max 4min (240 secs) every 20 secs
-                MAX_ATTEMPTS=12
+                
+                MAX_ATTEMPTS=10
                 ATTEMPT=1
 
                 while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
@@ -37,7 +37,7 @@ jobs:
                   # Fly.io ssh console to check the status of the Airflow DAG run
                   # Status: running, success, failed
 
-                  STATUS=$(flyctl ssh console --command "airflow dags state london_restaurant_hygiene_pipeline" -a london-restaurant-hygiene-pipeline 2>/dev/null | tail -n 1 | tr -d '\r\n ' || echo "booting")
+                  STATUS=$(flyctl ssh console --command "airflow dags list-runs -d london_restaurant_hygiene_pipeline -o plain --no-backfill | tail -n 1 | awk '{print \$3}'" -a london-restaurant-hygiene-pipeline 2>/dev/null | tr -d '\r\n ' || echo "booting")
 
                   echo "Current DAG State: [$STATUS]"
 
@@ -49,7 +49,7 @@ jobs:
                     exit 1
                   fi
 
-                  sleep 20
+                  sleep 15
                   ATTEMPT=$((ATTEMPT+1))
                 done
 
