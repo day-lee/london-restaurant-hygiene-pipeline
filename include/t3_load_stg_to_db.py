@@ -18,6 +18,7 @@ def load_to_db():
         "dbname": os.environ.get("DB_NAME"),
         "user": os.environ.get("DB_USER"),
         "password": os.environ.get("DB_PASSWORD"),
+        "sslmode": "require"
     }
 
     # stg 테이블에 벌크 인서트
