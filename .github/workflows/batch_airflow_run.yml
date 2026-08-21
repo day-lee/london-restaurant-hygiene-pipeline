@@ -23,9 +23,9 @@ jobs:
               env: 
                 FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-            - name: ⏳ 에어플로우 내부 부팅 대기 (2분)
+            - name: ⏳ 에어플로우 내부 부팅 대기
               run: |
-                echo "에어플로우가 완전히 깨어나서 명령을 받을 수 있을 때까지 120초 동안 대기합니다..."
+                echo "에어플로우가 완전히 깨어나서 명령을 받을 수 있을 때까지 60초 동안 대기합니다..."
                 sleep 60
 
             - name: 🎯 Airflow DAG 강제 트리거 (첫 가동 수동 명령)
