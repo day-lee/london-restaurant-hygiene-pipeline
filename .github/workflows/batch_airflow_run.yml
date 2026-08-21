@@ -2,13 +2,13 @@ name: Batch Airflow Run
 
 on:
     schedule: 
-        - cron: '0 0 * * *'
+        - cron: '0 0 * * *' #every day at midnight UTC
     workflow_dispatch: # manual trigger test 
 jobs: 
     run_pipeline:
         runs-on: ubuntu-latest 
         steps:
-            - name: Checkout repogistory 
+            - name: Checkout repository 
               uses: actions/checkout@v3 
             
             - name: Set up Fly.io CLI 
@@ -22,12 +22,43 @@ jobs:
                 flyctl machine start 8ed9d17f314448 -a london-restaurant-hygiene-pipeline
               env: 
                 FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+   
+            - name: Airflow Booting wait nd DAG status check 
+              run: |
+                echo "Check Airflow booting status and DAG completion..."
 
-            - name: Airflow Booting wait and batch run 
-              run: | 
-                echo "Waiting for Airflow to boot and execute the DAG" 
-                sleep 100 
-            
+                # Max 4min (240 secs) every 20 secs
+                MAX_ATTEMPTS=12
+                ATTEMPT=1
+
+                while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+                  echo "Checking pipeline status... (Attempt $ATTEMPT/$MAX_ATTEMPTS)"
+
+                  # Fly.io ssh console to check the status of the Airflow DAG run
+                  # Status: running, success, failed
+
+                  STATUS=$(flyctl ssh console --command "airflow dags state london_restaurant_hygiene_pipeline" -a london-restaurant-hygiene-pipeline 2>/dev/null | tail -n 1 | tr -d '\r\n ' || echo "booting")
+
+                  echo "Current DAG State: [$STATUS]"
+
+                  if [ "$STATUS" = "success" ]; then
+                    echo "Success!"
+                    exit 0
+                  elif [ "$STATUS" = "failed" ]; then
+                    echo "[Error] Airflow DAG failed. Please check the logs for more details."
+                    exit 1
+                  fi
+
+                  sleep 20
+                  ATTEMPT=$((ATTEMPT+1))
+                done
+
+                echo "[Warning] Timeout! Batch run did not complete within the expected time frame."
+                exit 1
+              env: 
+                FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+
             - name: Fly.io Airflow Stop 
               if: always() # Ensure this step runs even if previous steps fail
               run: | 
