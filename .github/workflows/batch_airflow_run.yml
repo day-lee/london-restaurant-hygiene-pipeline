@@ -19,7 +19,7 @@ jobs:
             - name: Fly.io Airflow Start 
               run: | 
                 echo "Starting Airflow..."
-                flyctl machine start 8ed9d17f314448 -a london-restaurant-hygiene-pipeline
+                flyctl machine start 8ee01dc7d723e8 -a london-restaurant-hygiene-pipeline
               env: 
                 FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
    
@@ -63,6 +63,6 @@ jobs:
               if: always() # Ensure this step runs even if previous steps fail
               run: | 
                 echo "Stopping Airflow...to prevent billing"
-                flyctl machine stop 8ed9d17f314448 -a london-restaurant-hygiene-pipeline
+                flyctl machine stop 8ee01dc7d723e8 -a london-restaurant-hygiene-pipeline
               env: 
                 FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
