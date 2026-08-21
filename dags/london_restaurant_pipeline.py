@@ -44,14 +44,15 @@ with DAG(
             python_callable=load_to_db,
     )
 
+
     task_4 = BashOperator(
         task_id='dbt_run_task',
         bash_command="""
-        export DW_USER="{{ conn.analytics_user.login }}" && \
-        export DW_PASSWORD="{{ conn.analytics_user.get_password() }}" && \
-        export DW_HOST="{{ conn.analytics_user.host }}" && \
-        export DW_PORT="{{ conn.analytics_user.port }}" && \
-        export DW_DB="{{ conn.analytics_user.schema }}" && \
+        export DW_USER="$DB_USER" && \
+        export DW_PASSWORD="$DB_PASSWORD" && \
+        export DW_HOST="$DB_HOST" && \
+        export DW_PORT="$DB_PORT" && \
+        export DW_DB="$DB_NAME" && \
         export DBT_ALLOW_EXPERIMENTAL_ADAPTERS="true" && \
         export XDG_CACHE_HOME="/opt/airflow/.cache" && \
         cd /opt/airflow/dbt_project && dbt run --profiles-dir .
