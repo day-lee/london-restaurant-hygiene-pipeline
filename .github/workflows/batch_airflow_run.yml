@@ -22,7 +22,14 @@ jobs:
                 flyctl machine start 8747495f6109e8 -a london-restaurant-hygiene-pipeline
               env: 
                 FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-   
+
+            - name: 🎯 Airflow DAG 강제 트리거 (첫 가동 수동 명령)
+              run: | 
+                echo "DAG를 강제로 즉시 실행합니다..."
+                flyctl machine ssh --command "airflow dags trigger london_restaurant_hygiene_pipeline" -a london-restaurant-hygiene-pipeline
+              env: 
+                FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}                
+                      
             - name: Waiting for Airflow to be fully up and running the Dag
               run: |
                 echo "waiting for 5 minutes to ensure Airflow is fully up and run the DAG"
