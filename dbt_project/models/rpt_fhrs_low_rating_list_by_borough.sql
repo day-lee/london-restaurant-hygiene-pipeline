@@ -18,14 +18,14 @@ with low_ratings_list as (
 )
 
 select 
-    fhrs_id, 
-    rn, 
-    local_authority_name,  
-    business_name, 
-    rating_score, 
-    postcode, 
-    local_authority_code, 
-    rating_date,
-    updated_at
-from low_ratings_list 
+    l.fhrs_id, 
+    l.rn, 
+    dla.local_authority_name,  
+    l.business_name, 
+    l.rating_score, 
+    l.postcode, 
+    l.local_authority_code, 
+    l.rating_date,
+    l.updated_at
+from low_ratings_list l
 join {{ ref('dim_local_authorities') }} dla using(local_authority_code)
