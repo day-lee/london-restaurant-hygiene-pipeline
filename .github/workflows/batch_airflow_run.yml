@@ -23,19 +23,23 @@ jobs:
               env: 
                 FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
+            - name: ⏳ 에어플로우 내부 부팅 대기 (2분)
+              run: |
+                echo "에어플로우가 완전히 깨어나서 명령을 받을 수 있을 때까지 120초 동안 대기합니다..."
+                sleep 120
+
             - name: 🎯 Airflow DAG 강제 트리거 (첫 가동 수동 명령)
               run: | 
-                echo "DAG를 강제로 즉시 실행합니다..."
+                echo "DAG를 실행합니다..."
                 # [수정 완료] machine exec 명령어를 사용하여 내부에서 Airflow CLI를 바로 쏩니다.
                 flyctl machine exec 8747495f6109e8 "airflow dags trigger london_restaurant_hygiene_pipeline" -a london-restaurant-hygiene-pipeline
               env: 
                 FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
                
-                      
             - name: Waiting for Airflow to be fully up and running the Dag
               run: |
                 echo "waiting for 5 minutes to ensure Airflow is fully up and run the DAG"
-                sleep 240 
+                sleep 150 
 
             - name: Fly.io Airflow Stop 
               if: always() # Ensure this step runs even if previous steps fail
