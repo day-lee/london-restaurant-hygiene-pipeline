@@ -1,37 +1,48 @@
 name: Batch Airflow Run 
 
 on:
-    schedule: 
-        - cron: '0 0 * * *' #every day at midnight UTC
-    workflow_dispatch: # manual trigger test 
+  schedule: 
+    - cron: '0 0 * * *' # Every day at midnight UTC
+  workflow_dispatch: # Manual trigger test 
+
 jobs: 
-    run_pipeline:
-        runs-on: ubuntu-latest 
-        steps:
-            - name: Checkout repository 
-              uses: actions/checkout@v3 
-            
-            - name: Set up Fly.io CLI 
-              uses: superfly/flyctl-actions/setup-flyctl@master 
-              with: 
-                version: '0.2.10'
+  run_pipeline:
+    runs-on: ubuntu-latest 
+    steps:
+      - name: Checkout repository 
+        uses: actions/checkout@v3 
 
-            - name: Fly.io Airflow Start 
-              run: | 
-                echo "Starting Airflow..."
-                flyctl machine start 8747495f6109e8 -a london-restaurant-hygiene-pipeline
-              env: 
-                FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-               
-            - name: Waiting for Airflow to be fully up and running the Dag
-              run: |
-                echo "waiting for 3 minutes to ensure Airflow is fully up and run the DAG"
-                sleep 180 
+      - name: Set up Fly.io CLI 
+        uses: superfly/flyctl-actions/setup-flyctl@master 
+        with: 
+          version: '0.2.10'
 
-            - name: Fly.io Airflow Stop 
-              if: always() # Ensure this step runs even if previous steps fail
-              run: | 
-                echo "Stopping Airflow...to prevent billing"
-                flyctl machine stop 8747495f6109e8 -a london-restaurant-hygiene-pipeline
-              env: 
-                FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      - name: Fly.io Airflow Start
+        id: get_machine
+        run: | 
+          echo "Fetching Machine ID dynamically..."
+          # 앱 내에 존재하는 첫 번째 머신의 ID를 추출합니다.
+          MACHINE_ID=$(flyctl machines list -a london-restaurant-hygiene-pipeline --json | jq -r '.[0].id')
+          echo "Found Machine ID: $MACHINE_ID"
+          
+          # 다음 스텝에서 사용할 수 있도록 환경 변수에 저장합니다.
+          echo "MACHINE_ID=$MACHINE_ID" >> $GITHUB_ENV
+          
+          echo "Starting Airflow Machine..."
+          flyctl machine start $MACHINE_ID -a london-restaurant-hygiene-pipeline
+        env: 
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+         
+      - name: Waiting for Airflow to be fully up and running the Dag
+        run: |
+          echo "Waiting for 3 minutes to ensure Airflow is fully up and running the DAG"
+          sleep 180 
+
+      - name: Fly.io Airflow Stop 
+        if: always() # Ensure this step runs even if previous steps fail
+        run: | 
+          echo "Stopping Airflow Machine ($MACHINE_ID) to prevent billing..."
+          flyctl machine stop $ENV.MACHINE_ID -a london-restaurant-hygiene-pipeline
+        env: 
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          MACHINE_ID: ${{ env.MACHINE_ID }}
