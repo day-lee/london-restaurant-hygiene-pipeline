@@ -39,10 +39,11 @@ jobs:
           sleep 180 
 
       - name: Fly.io Airflow Stop 
-        if: always() # Ensure this step runs even if previous steps fail
+        if: always() # 이전 스텝이 실패해도 비용 방지를 위해 무조건 실행
         run: | 
           echo "Stopping Airflow Machine ($MACHINE_ID) to prevent billing..."
-          flyctl machine stop $ENV.MACHINE_ID -a london-restaurant-hygiene-pipeline
+          # $ENV.MACHINE_ID를 $MACHINE_ID로 올바르게 수정했습니다.
+          flyctl machine stop $MACHINE_ID -a london-restaurant-hygiene-pipeline
         env: 
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
           MACHINE_ID: ${{ env.MACHINE_ID }}
