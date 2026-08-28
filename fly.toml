@@ -6,19 +6,19 @@ primary_region = 'lhr'
 [http_service] 
   internal_port = 8080
   force_https = true
-  auto_stop_machines = false   # 트래픽 없다고 맘대로 끄지 못하게 막음
-  auto_start_machines = false  # 트래픽 몰린다고 맘대로 새로 켜지 못하게 막음
+  auto_stop_machines = true
+  auto_start_machines = true
   min_machines_running = 0
   processes = ['app']
   max_machines_count = 1 
 
   [[http_service.checks]]
-    grace_period = "180s" 
+    grace_period = "120s" 
     interval = "15s"
     restart_limit = 0
     timeout = "5s"
     method = "get"
-    path = "/health" 
+    path = "/login" 
 
 [[vm]]
   size = "shared-cpu-2x"
