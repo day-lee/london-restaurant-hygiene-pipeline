@@ -34,6 +34,5 @@ primary_region = 'lhr'
   AIRFLOW__CORE__LOAD_EXAMPLES = "False" 
   AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL = "60"
 
-[experimental]
-  entrypoint = ["sh", "-c"]
-  cmd = ["airflow db migrate; airflow scheduler & exec airflow webserver --hostname 0.0.0.0 --port 8080 --workers 1"]
+[processes]
+  app = "sh -c 'airflow db migrate && (airflow scheduler & exec airflow webserver --hostname 0.0.0.0 --port 8080 --workers 1)'"
