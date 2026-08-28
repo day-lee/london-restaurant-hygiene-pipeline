@@ -1,6 +1,5 @@
 {{ config(
-    materialized='table',
-    bind=false
+    materialized='view',
 ) }}
 
 with low_ratings_list as (

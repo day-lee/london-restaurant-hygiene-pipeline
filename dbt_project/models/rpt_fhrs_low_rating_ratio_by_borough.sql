@@ -1,6 +1,5 @@
 {{ config(
-    materialized='table',
-    bind=false 
+    materialized='view',
 ) }}
 
 WITH fhrs_summary AS (
