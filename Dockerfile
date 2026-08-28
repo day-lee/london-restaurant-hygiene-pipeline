@@ -11,7 +11,7 @@ USER airflow
 
 RUN pip install --no-cache-dir \
     "protobuf<5" \
-    "dbt-core==1.8.7" \
+    "dbt-core==1.8.2" \
     "dbt-postgres==1.8.7" \
     "psycopg[binary]"
 
