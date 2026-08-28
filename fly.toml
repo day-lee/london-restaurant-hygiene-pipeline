@@ -18,7 +18,7 @@ primary_region = 'lhr'
     restart_limit = 0
     timeout = "5s"
     method = "get"
-    path = "/login" 
+    path = "/health" 
 
 [[vm]]
   size = "shared-cpu-2x"
