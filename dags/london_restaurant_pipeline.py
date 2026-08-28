@@ -53,7 +53,6 @@ with DAG(
         export DW_HOST="$DB_HOST" && \
         export DW_PORT="$DB_PORT" && \
         export DW_DB="$DB_NAME" && \
-        export DBT_ALLOW_EXPERIMENTAL_ADAPTERS="true" && \
         export XDG_CACHE_HOME="/opt/airflow/.cache" && \
         cd /opt/airflow/dbt_project && dbt run --profiles-dir .
         """
