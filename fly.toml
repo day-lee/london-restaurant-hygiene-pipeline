@@ -35,4 +35,4 @@ primary_region = 'lhr'
   AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL = "60"
   AIRFLOW__WEBSERVER__BASE_URL = "https://london-restaurant-hygiene-pipeline.fly.dev"
   AIRFLOW__WEBSERVER__ENABLE_PROXY_FIX = "True"
-  AIRFLOW__WEBSERVER__COOKIE_SECURE = "True"
+  AIRFLOW__WEBSERVER__COOKIE_SECURE = "False"
