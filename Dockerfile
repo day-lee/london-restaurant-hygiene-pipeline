@@ -9,7 +9,11 @@ RUN apt-get update && \
 
 USER airflow 
 
-RUN pip install --no-cache-dir "protobuf<5" "dbt-postgres>=1.8.0,<1.9.0" "psycopg[binary]"
+RUN pip install --no-cache-dir \
+    "protobuf<5" \
+    "dbt-core==1.8.7" \
+    "dbt-postgres==1.8.7" \
+    "psycopg[binary]"
 
 COPY --chown=airflow:root ./dags /opt/airflow/dags
 COPY --chown=airflow:root ./dbt_project /opt/airflow/dbt_project
