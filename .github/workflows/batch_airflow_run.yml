@@ -2,7 +2,7 @@ name: Batch Airflow Run
 
 on:
   schedule: 
-    - cron: '0 0 * * *' # Every day at midnight UTC
+    - cron: '30 4 * * 1-5'   # Mon-Fri at 4:30 AM UTC
   workflow_dispatch: # Manual trigger test 
 
 jobs: 
