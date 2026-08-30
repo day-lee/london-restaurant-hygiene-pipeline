@@ -2,6 +2,8 @@
 
 * **System:** Hybrid (Local & Cloud) ELT pipeline built with **Apache Airflow**.
 * **Data:** London restaurant food hygiene ratings [(**FSA Open Data**)](https://ratings.food.gov.uk/open-data).
+* **Data Volume:** Processes **~81k active restaurant records** per weekly batch run.
+* **Data Modeling Strategy:** Implemented **SCD (Slowly Changing Dimension) Type 2** logic to track rating evolution over time
 * **Impact:** Weekly insights for a (hypothetical) delivery ops team to mitigate operational risks.
 
 <p align="center">
@@ -17,6 +19,7 @@
 
 ### Architecture Components
 
+* **Environment Strategy**: The Local Path serves as a sandbox for rapid, repeatable testing, while the Cloud Path drives the automated production environment.
 * **Local Path:** AWS S3 (Raw Data Lake) -> PostgreSQL (Data Warehouse) -> dbt (Transformation)
 * **Cloud Path:** Fly.io (Runtime) -> GitHub Actions (Scheduler) -> Supabase Postgres (Data Warehouse) -> dbt (Transformation)
 * **Orchestration:** Apache Airflow (Docker-based environment)
