@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 ## 💡 Project Overview
 
 * **System:** Hybrid (Local & Cloud) ELT pipeline built with **Apache Airflow**.
@@ -49,5 +48,3 @@
 * **Local Path (S3 + Postgres):** Dedicated to safe local development and debugging.
 * **Cloud Path (Fly.io + Supabase):** A lightweight, serverless production environment.
 * **FinOps & Stability:** Minimises cloud spend by keeping dev/test environments local, while improving production stability through strict architecture isolation.
-
-Airflow web dashboard: https://london-restaurant-hygiene-pipeline.fly.dev/
