@@ -9,12 +9,13 @@ RUN apt-get update && \
 
 USER airflow 
 
+# psycopg2-binary를 명시적으로 추가해 줍니다.
 RUN pip install --no-cache-dir \
     "protobuf<5" \
     "dbt-core==1.8.2" \
     "dbt-postgres==1.8.2" \
+    "psycopg2-binary" \
     "psycopg[binary]"
-
 
 COPY --chown=airflow:root ./dags /opt/airflow/dags
 COPY --chown=airflow:root ./dbt_project /opt/airflow/dbt_project
