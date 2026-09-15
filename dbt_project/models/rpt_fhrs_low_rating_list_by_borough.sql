@@ -2,18 +2,32 @@
     materialized='view',
 ) }}
 
-with low_ratings_list as (
+with latest_restaurant_status as (
     select 
         fhrs_id, 
-        row_number() over(partition by local_authority_code order by rating_score) as rn, 
         business_name, 
         postcode, 
         local_authority_code, 
         rating_score, 
         rating_date,
-        updated_at
+        updated_at,
+        row_number() over(partition by fhrs_id order by updated_at desc) as latest_rn
     from {{ ref('fact_hygiene_ratings')}}
-    where rating_score <= 2
+),
+
+low_ratings_list as (
+    select 
+        fhrs_id, 
+        business_name, 
+        postcode, 
+        local_authority_code, 
+        rating_score, 
+        rating_date,
+        updated_at,
+        row_number() over(partition by local_authority_code order by rating_score) as rn
+    from latest_restaurant_status
+    where latest_rn = 1         
+      and rating_score <= 2      
 )
 
 select 
